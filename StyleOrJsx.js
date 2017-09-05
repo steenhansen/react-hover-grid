@@ -1,8 +1,8 @@
-'use strict'
+//'use strict'
 
-let StyleOrJsx = (function () {
+var StyleOrJsx = (function () {
 
-  Constr = function (className_list, jsx_styles) {
+   Constr = function (className_list, jsx_styles) {
     className_list = (typeof className_list !== 'undefined') ? className_list : ''
     jsx_styles = (typeof jsx_styles !== 'undefined') ? jsx_styles : {}
     this.className_list = className_list
@@ -15,7 +15,7 @@ let StyleOrJsx = (function () {
       if (typeof className_or_jsx === 'undefined') {
         return ''
       } else if (typeof className_or_jsx === 'object') {
-        jsx_styles = Object.assign(this.jsx_styles, className_or_jsx)
+        this.jsx_styles = Object.assign(this.jsx_styles, className_or_jsx)
       } else if (typeof className_or_jsx === 'string' || className_or_jsx instanceof String) {
         if (className_or_jsx.includes(':')) {
         } else {
