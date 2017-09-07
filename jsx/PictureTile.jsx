@@ -3,7 +3,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import gradient_locations from './GradientLocations.js'
-import misc_functions from './miscFuncs.js'
 import StyleOrJsx from '../StyleOrJsx.js'
 
 const IMAGES_DIR = 'hover-grid-images'
@@ -218,7 +217,7 @@ class PictureTile extends Component {
   _normalImage() {
     const image_id = this.class_id_names['IMAGE_ID'] + this.props.picture_container_id
     const image_src = this._imageSource(TILE_SIZED_IMAGES)
-    let image_styles = new StyleOrJsx('', {width: this.props.scaled_picture_width, cursor: 'pointer'})
+    let image_styles = new StyleOrJsx('', {width: this.props.picture_width, cursor: 'pointer'})
     image_styles.addStyling({marginLeft: this.props.left_picture_margin})
     const image_classNames = image_styles.collectedClassNames()
     const image_jsx_styles = image_styles.collectedJsx()
@@ -247,19 +246,18 @@ class PictureTile extends Component {
     const hover_show_id = picture_container_id + this.class_id_names['HOVER_TEXT_POSTFIX']
     const before_show_id = picture_container_id + this.class_id_names['NORMAL_TEXT_POSTFIX']
     const normal_show_id = picture_container_id + this.class_id_names['IMAGE_POSTFIX']
-    let my_styles = ` #${picture_container_id}:hover #${hover_show_id}{opacity: 1}
-                      #${picture_container_id}       #${hover_show_id}{opacity: 0}
-                      #${picture_container_id}:hover #${before_show_id} {opacity: 0}          
-                      #${picture_container_id}       #${before_show_id} {opacity: 1} 
-                      #${picture_container_id}:hover #${normal_show_id} {opacity: 0}          
-                      #${picture_container_id}       #${normal_show_id} {opacity: 1} `
+    let my_styles = ` #${picture_container_id}:hover #${hover_show_id}{opacity:1}`
+                  + ` #${picture_container_id} #${hover_show_id}{opacity:0}`
+                  + ` #${picture_container_id}:hover #${before_show_id}{opacity:0}`
+                  + ` #${picture_container_id} #${before_show_id}{opacity:1}`
+                  + ` #${picture_container_id}:hover #${normal_show_id}{opacity:0}`
+                  + ` #${picture_container_id} #${normal_show_id}{opacity:1} `
     if (typeof this.props.filter_hover !== 'undefined') {
       my_styles += ` #${picture_container_id}:hover {filter: ${this.props.filter_hover} } `
     }
     if (typeof this.props.filter_normal !== 'undefined') {
       my_styles += ` #${picture_container_id} {filter: ${this.props.filter_normal} } `
     }
-    my_styles = misc_functions.minimizeCss(my_styles)
     return my_styles
   }
 
@@ -310,7 +308,7 @@ PictureTile.propTypes = {
   , filter_normal: PropTypes.string
   , filter_hover: PropTypes.string
   , adjusted_tile_width: PropTypes.number.isRequired
-  , scaled_picture_width: PropTypes.number.isRequired
+  , picture_width: PropTypes.number.isRequired
   , left_picture_margin: PropTypes.number.isRequired
   , picture_src: PropTypes.string.isRequired
   , link_url: PropTypes.string

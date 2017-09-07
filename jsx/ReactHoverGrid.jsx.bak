@@ -438,9 +438,10 @@ class ReactHoverGrid extends React.Component {
                             + `;vertical-align:middle`
                             + `;text-align:left} `
     let location_css = tile_parent +
-      north_west + north + north_east +
-      west + middle + east +
-      south_west + south + south_east
+            north_west + north + north_east +
+            west + middle + east +
+            south_west + south + south_east
+    location_css = misc_functions.minimizeCss(location_css)
     return location_css
   }
 

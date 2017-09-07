@@ -11,7 +11,6 @@ const error_text_color = 'bgRed'
 const start_text_color = 'bgGreen'
 const debug = require('gulp-debug')
 const moment = require('moment')
-const changed = require('gulp-changed')
 var unassert = require('gulp-unassert')
 
 env('./.env')  // N.B. This defines process.env.NODE_ENV
@@ -29,7 +28,6 @@ function jsx_to_js_1() {
   const js_dest = __dirname +'/js'
   return gulp.src(jsx_source)
           .on('error', onError)
-          .pipe(changed(js_dest, {extension: '.js'}))
           .pipe(babel({presets: ['es2015', "stage-2"]}))
           .pipe(gulp.dest(js_dest))
           .pipe(debug({title: 'hover_tiles_compile jsx:'}))
@@ -43,7 +41,6 @@ function remove_asserts_2() {
   }
   return gulp.src(js_source)
           .on('error', onError)
-          .pipe(changed(js_dest))
           .pipe(unassert())
           .pipe(gulp.dest(js_dest))
           .pipe(debug({title: 'hover_tiles_compile unAssert:'}))

@@ -19,16 +19,5 @@ function _getComputedWidth(grid_id) {
   }
 }
 
-// https://stackoverflow.com/questions/4402220/regex-to-minimize-css
-function minimizeCss(css_content) {
-  if (process.env.NODE_ENV === 'development') {
-    return css_content
-  }
-  let content_min = css_content.replace(/\/\*(?:(?!\*\/)[\s\S])*\*\/|[\r\n\t]+/g, '')
-  content_min = content_min.replace(/ {2,}/g, ' ')
-  content_min = content_min.replace(/ ([{:}]) /g, '$1')
-  content_min = content_min.replace(/([;,]) /g, '$1')
-  content_min = content_min.replace(/ !/g, '!')
-  return content_min
-}
-module.exports = {_windowWidth,  _getComputedWidth, minimizeCss}
+
+module.exports = {_windowWidth,  _getComputedWidth}

@@ -39,10 +39,10 @@ function StyleOrJsx(className_list, jsx_styles) {
   }
 
   return Object.freeze({
-    addStyling: addStyling,
-    collectedJsx: collectedJsx,
-    collectedClassNames:collectedClassNames
-  });
+    addStyling: addStyling
+    ,collectedJsx: collectedJsx
+    ,collectedClassNames:collectedClassNames
+  })
 }
 
 module.exports = StyleOrJsx
