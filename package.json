@@ -1,13 +1,14 @@
 {
   "name": "react-hover-grid",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/steenhansen/react-hover-grid",
   "keywords": [
     "react",
     "image",
     "hover",
     "grid",
-    "gallery"
+    "gallery",
+    "resizing"
   ],
   "license": "MIT",
   "maintainers": [
