@@ -4,7 +4,6 @@
 
  ![visual explanation](https://react-hover-grid.herokuapp.com/react_hover_grid.jpg)
 
-An automatically resizing React Gallery component with many hovering capabilities. Server side rendering is also possible.
 
 Live [gmap-dragdrop-react examples](https://react-hover-grid.herokuapp.com/).
 
