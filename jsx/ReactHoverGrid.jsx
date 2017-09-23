@@ -31,23 +31,30 @@ class ReactHoverGrid extends React.Component {
     return misc_functions._getComputedWidth(grid_id)
   }
 
+
+
   componentDidMount() {
     if (IS_BROWSER && this.props.resize_nested_component) {
       window.addEventListener('resize', this.props.resize_pub_sub.publishWidthChange)
       this.props.resize_pub_sub.subscribeToWidthChange(this.onContainerResize, this.html_grid_id, this.getHover)
       this.props.resize_pub_sub.publishWidthChange()
-    }
+    }else if (this.props.onResize) {
+        var onResize=this.props.onResize
+        setTimeout(function () {
+          window.requestAnimationFrame(onResize)
+        }, 0)
+      }
   }
 
   _serverRenderCheck() {
-    if (this.props.server_render) {
-      invariant(typeof this.props.server_screen_size !== 'undefined', 'ReactHoverGrid must have a server_screen_size property if server_render')
-      invariant(Array.isArray(this.props.server_screen_size), 'ReactHoverGrid, server_screen_size must be an array if server_render, it is a ' + typeof this.props.server_screen_size)
-      invariant(this.props.server_screen_size.length > 0, 'ReactHoverGrid must have an un-empty server_screen_size property if server_render')
+    if (this.props.server_render_ssr) {
+      invariant(typeof this.props.server_screen_size !== 'undefined', 'ReactHoverGrid must have a server_screen_size property if server_render_ssr')
+      invariant(Array.isArray(this.props.server_screen_size), 'ReactHoverGrid, server_screen_size must be an array if server_render_ssr, it is a ' + typeof this.props.server_screen_size)
+      invariant(this.props.server_screen_size.length > 0, 'ReactHoverGrid must have an un-empty server_screen_size property if server_render_ssr')
 
-      invariant(typeof this.props.server_grid_size !== 'undefined', 'ReactHoverGrid must have a server_grid_size property if server_render')
-      invariant(Array.isArray(this.props.server_grid_size), 'ReactHoverGrid, server_grid_size must be an array if server_render, it is a ' + typeof this.props.server_grid_size)
-      invariant(this.props.server_grid_size.length > 0, 'ReactHoverGrid must have an un-empty server_grid_size property if server_render')
+      invariant(typeof this.props.server_grid_size !== 'undefined', 'ReactHoverGrid must have a server_grid_size property if server_render_ssr')
+      invariant(Array.isArray(this.props.server_grid_size), 'ReactHoverGrid, server_grid_size must be an array if server_render_ssr, it is a ' + typeof this.props.server_grid_size)
+      invariant(this.props.server_grid_size.length > 0, 'ReactHoverGrid must have an un-empty server_grid_size property if server_render_ssr')
 
       invariant(this.props.server_screen_size.length === this.props.server_grid_size.length, 'ReactHoverGrid server_grid_size and server_screen_size must be the same length')
       const window_to_grid_sizes = screen_size_to_grid.ScreenSizeToGrid(this.html_grid_id, this.props.server_screen_size, this.props.server_grid_size)
@@ -74,7 +81,7 @@ class ReactHoverGrid extends React.Component {
 
   _ssrOneCharId(hover_grid_id) {
     invariant(hover_grid_id.endsWith('_grid_id'), "ReactHoverGrid, constructor this.html_grid_id must end with '_grid_id' ")
-    if (this.props.server_render) {
+    if (this.props.server_render_ssr) {
       if (this.props.ssr_grid_id) {
         hover_grid_id = this.props.ssr_grid_id     // N.B. 's_grid_id' will be called 's' instead to save thousands of bytes on SSR hover grid
       }
@@ -93,8 +100,20 @@ class ReactHoverGrid extends React.Component {
     this.change_div_to_percent = false
     this.window_to_grid_sizes = this._serverRenderCheck()
     this._nestedComponentResizing()
+
+    let not_static_tiles =[]
+    let static_tile = false
+    for(let tile_data of this.props.pictureTile_list){
+      if (typeof tile_data['static_col']!== 'undefined' && typeof tile_data['static_row']!== 'undefined'){
+        static_tile=tile_data
+      }else{
+        not_static_tiles.push(tile_data)
+      }
+    }
+
     this.state = {
-      list_of_tiles: this.props.pictureTile_list
+      list_of_tiles: not_static_tiles
+      , static_tile : static_tile
       , computed_tiles: []
     }
     this._generateCss()
@@ -195,14 +214,22 @@ class ReactHoverGrid extends React.Component {
     return tile_cut_offs
   }
 
-  _buildTileRow(image_tiles, width_of_container) {
+  _buildTileRow(image_tiles, width_of_container, current_row) {
     console.assert(typeof image_tiles === 'object', '_buildTileRow, image_tiles not an object')
     console.assert((Object.keys(image_tiles)).length > 0, '_buildTileRow, image_tiles must have at least 1 tile')
+
     let row = []
     let current_row_width = 0
+    let column_count =0
+    let image_tile
     const image_margin = 2 * this.props.tile_edge
     while (image_tiles.length > 0 && current_row_width < width_of_container) {
-      let image_tile = image_tiles.shift()
+      column_count++
+      if (this.state.static_tile && column_count === this.state.static_tile['static_col'] && current_row === this.state.static_tile['static_row']) {
+          image_tile = Object.assign({}, this.state.static_tile)
+      }else{
+        image_tile = image_tiles.shift()
+      }
       row.push(image_tile)
       const scaled_margin_width = image_tile.picture_width + image_margin
       current_row_width += scaled_margin_width
@@ -259,9 +286,9 @@ class ReactHoverGrid extends React.Component {
     let pictures_tiles_rows_server = []
     let number_rows = 0
     while (list_of_tiles.length > 0) {
-      let tile_row = this._buildTileRow(list_of_tiles, edgeless_width)
-      pictures_tiles_rows_server.push(tile_row)
       number_rows++
+      let tile_row = this._buildTileRow(list_of_tiles, edgeless_width, number_rows)
+      pictures_tiles_rows_server.push(tile_row)
       if (number_rows === this.props.max_rows) {
         break
       }
@@ -275,6 +302,12 @@ class ReactHoverGrid extends React.Component {
     }
     return adjusted_tiles
   }
+
+
+
+
+
+
 
   _generateCss() {
     this.injected_css_styles = this._injectedCssStyles()
@@ -294,31 +327,7 @@ class ReactHoverGrid extends React.Component {
     }
   }
 
-  _renderServerMultiples(google_font_links) {
-    let all_server_widths = []
-    for (let browser_width in this.state.pictures_tiles_rows_server) {
-      const adjusted_pictures = this.state.pictures_tiles_rows_server[browser_width]
-      const picture_list = this._cssInjectedPictures(adjusted_pictures)
-      const id_name = this.class_id_names.serverWidthId(browser_width, this.html_grid_id)
-      const px_width_browser = this.state.pictures_container_width[browser_width] + 'px'
-      const styles_of_tile = {width: px_width_browser}
-      all_server_widths.push(<div id={id_name} key={browser_width} style={styles_of_tile}>
-        {picture_list}
-      </div>)
-    }
-    const edge_styles = {paddingLeft: this.props.tile_edge, paddingRight: this.props.tile_edge}
-    const media_hide_grids = this.window_to_grid_sizes.showMatchingSizedGridCss()
-    let multiple_widths = (
-            <div style={edge_styles}>
-              <style dangerouslySetInnerHTML={{__html: this.props.inject_css_rules}}/>
-              <div dangerouslySetInnerHTML={{__html: google_font_links}}/>
-              <style dangerouslySetInnerHTML={{__html: media_hide_grids}}/>
-              <style dangerouslySetInnerHTML={{__html: this.injected_css_styles}}/>
-              {all_server_widths}
-            </div>
-    )
-    return multiple_widths
-  }
+
 
   setHoverFunction(is_hovering) {
     this.is_hovering = is_hovering
@@ -343,6 +352,7 @@ class ReactHoverGrid extends React.Component {
     if (this.props.shuffle_seconds) {
       const milliseconds = this.props.shuffle_seconds * 1000
       this._shuffleTiles = this._shuffleTiles.bind(this)
+      this._shuffleTiles()
       setInterval(this._shuffleTiles, milliseconds)
     }
   }
@@ -478,19 +488,67 @@ class ReactHoverGrid extends React.Component {
     }
     return current_tile
   }
-
+  _renderServerMultiples(google_font_links) {
+    let all_server_widths = []
+    for (let browser_width in this.state.pictures_tiles_rows_server) {
+      const adjusted_pictures = this.state.pictures_tiles_rows_server[browser_width]
+      const picture_list = this._cssInjectedPictures(adjusted_pictures)
+      const id_name = this.class_id_names.serverWidthId(browser_width, this.html_grid_id)
+      const px_width_browser = this.state.pictures_container_width[browser_width] + 'px'
+      const styles_of_tile = {width: px_width_browser}
+      all_server_widths.push(<div id={id_name} key={browser_width} style={styles_of_tile}>
+        {picture_list}
+      </div>)
+    }
+    const edge_styles = {paddingLeft: this.props.tile_edge, paddingRight: this.props.tile_edge}
+    const media_hide_grids = this.window_to_grid_sizes.showMatchingSizedGridCss()
+    let multiple_widths = (
+      <div style={edge_styles}>
+        <style dangerouslySetInnerHTML={{__html: this.props.inject_css_rules}}/>
+        <div dangerouslySetInnerHTML={{__html: google_font_links}}/>
+        <style dangerouslySetInnerHTML={{__html: media_hide_grids}}/>
+        <style dangerouslySetInnerHTML={{__html: this.injected_css_styles}}/>
+        {all_server_widths}
+      </div>
+    )
+    return multiple_widths
+  }
+  _renderBrowserExact(google_font_links) {
+    const adjusted_pictures = this.state.computed_tiles
+    const picture_list = this._cssInjectedPictures(adjusted_pictures)
+    const border_adjust = {paddingLeft: this.props.tile_edge, paddingRight: this.props.tile_edge}
+    return (
+      <div style={border_adjust}>
+        <div>
+          <style dangerouslySetInnerHTML={{__html: this.props.inject_css_rules}}/>
+          <div dangerouslySetInnerHTML={{__html: google_font_links}}/>
+          <style dangerouslySetInnerHTML={{__html: this.injected_css_styles}}/>
+          {picture_list}
+        </div>
+      </div>
+    )
+  }
   _cssInjectedPictures(adjusted_pictures) {
     console.assert(typeof adjusted_pictures === 'object', '_cssInjectedPictures, adjusted_pictures not an object')
     const picture_list = adjusted_pictures.map((tile_before_css, tile_index) => {
       const current_tile = this._cascadeStyles(tile_before_css)
       console.assert(typeof current_tile === 'object', '_cssInjectedPictures, current_tile not an object')
       const picture_container_id = this.html_grid_id + tile_index
+
+      let is_static_tile = false
+      if (current_tile['static_col'] && current_tile['static_row']) {
+        is_static_tile = true
+        
+      }
+      
       return <PictureTile
               key={tile_index}
 
               picture_container_id={picture_container_id}
               setHoverFunction={this.setHoverFunction}
 
+              is_static_tile={is_static_tile}
+              
               hover_grid_id={this.props.hover_grid_id}
               ssr_grid_id={this.props.ssr_grid_id}
 
@@ -546,7 +604,7 @@ class ReactHoverGrid extends React.Component {
   render() {
     let google_font_links = this._googleLinks()
     if (IS_NODE) {
-      if (this.props.server_render) {
+      if (this.props.server_render_ssr) {
         return this._renderServerMultiples(google_font_links)
       } else {
         return null
@@ -556,22 +614,12 @@ class ReactHoverGrid extends React.Component {
     }
   }
 
-  _renderBrowserExact(google_font_links) {
+    componentDidUpdate(){
+     if (this.props.onResize) {
+       this.props.onResize()
+     }
+   }
 
-    const adjusted_pictures = this.state.computed_tiles
-    const picture_list = this._cssInjectedPictures(adjusted_pictures)
-    const border_adjust = {paddingLeft: this.props.tile_edge, paddingRight: this.props.tile_edge}
-    return (
-            <div style={border_adjust}>
-              <div>
-                <style dangerouslySetInnerHTML={{__html: this.props.inject_css_rules}}/>
-                <div dangerouslySetInnerHTML={{__html: google_font_links}}/>
-                <style dangerouslySetInnerHTML={{__html: this.injected_css_styles}}/>
-                {picture_list}
-              </div>
-            </div>
-    )
-  }
 
 }
 
@@ -614,18 +662,21 @@ ReactHoverGrid.propTypes = {
   , resize_nested_component: PropTypes.bool
   , resize_pub_sub: PropTypes.object
 
-  , server_render: PropTypes.bool
+  , server_render_ssr: PropTypes.bool
   , server_screen_size: PropTypes.array
   , show_server_grid_sizes: PropTypes.bool
   , server_grid_size: PropTypes.array
 
+  , static_col: PropTypes.number        // N.B. can only use if all images are the same size !
+  , static_row: PropTypes.number
+  , onResize: PropTypes.func
 }
 
 ReactHoverGrid.defaultProps = {
   hor_text_edge: 4
   , ver_text_edge: 2
   , tile_edge: 3
-  , server_render: false
+  , server_render_ssr: false
   , resize_nested_component: false
 }
 

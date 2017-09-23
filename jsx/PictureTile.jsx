@@ -173,12 +173,10 @@ class PictureTile extends Component {
     }else{
       this.css_grid_id = this.props.hover_grid_id   // N.B. use long version 'my_dogs_grid_id' for css
     }
-    let link_url = this._imageUrl()
     this.class_id_names = require('./classIdNames.js')(this.css_grid_id)
     console.assert(typeof this.class_id_names === 'object', 'PictureTile, class_id_name error')
     this.state = {
       hover: false
-      , link_url: link_url
     }
   }
 
@@ -232,7 +230,13 @@ class PictureTile extends Component {
   _imageTile() {
     const {normal_classNames:normal_classNames, normal_jsx_styles:normal_jsx_styles} = this._imageDivStyles()
     const {image_id:image_id, image_src:image_src, image_classNames:image_classNames, image_jsx_styles:image_jsx_styles} = this._normalImage()
-    return (<div className={normal_classNames} style={normal_jsx_styles}>
+    let static_tile_id = ''
+    if (this.props.is_static_tile){
+      static_tile_id ='the_static_tile'
+
+    }
+
+    return (<div className={normal_classNames} style={normal_jsx_styles} id={static_tile_id}>
       <img id={image_id} src={image_src} style={image_jsx_styles} className={image_classNames}/>
     </div> )
   }
@@ -267,7 +271,7 @@ class PictureTile extends Component {
     const image_tile = this._imageTile(this.props.picture_container_id + this.class_id_names['IMAGE_POSTFIX'])
     const tile_container_class = this.class_id_names['TILE_CONTAINER_PF']
     const my_styles = this._showHideCss()
-    const image_url = this.state.link_url
+    let image_url = this._imageUrl()
     return (  <div className={tile_container_class}
                    id={this.props.picture_container_id}
                    onMouseEnter={() => this._imageHover(true)  }
@@ -280,6 +284,8 @@ class PictureTile extends Component {
       </a>
     </div> )
   }
+
+
 
 }
 PictureTile.displayName = 'PictureTile'
@@ -318,6 +324,7 @@ PictureTile.propTypes = {
   , hover_title: PropTypes.string
   , hover_info: PropTypes.string
 
+  , is_static_tile:PropTypes.bool
 }
 
 PictureTile.defaultProps = {
