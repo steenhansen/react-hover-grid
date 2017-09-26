@@ -20,33 +20,31 @@ class ReactHoverGrid extends React.Component {
     , React.PropTypes.array
   ]
 
-  static windowWidth() {
+  static windowWidth () {
     return misc_functions._windowWidth()
   }
 
-  static getComputedWidth(grid_id) {
+  static getComputedWidth (grid_id) {
     invariant(typeof grid_id === 'string', 'getComputedWidth, grid_id must be a string, is a ' + typeof grid_id)
     invariant(grid_id.length > 0, 'getComputedWidth, grid_ must have at least one character, is length of ' + grid_id.length)
     invariant(!/\s/g.test(grid_id), 'getComputedWidth, grid_ must have no spaces, is "' + grid_id + '" ')
     return misc_functions._getComputedWidth(grid_id)
   }
 
-
-
-  componentDidMount() {
+  componentDidMount () {
     if (IS_BROWSER && this.props.resize_nested_component) {
       window.addEventListener('resize', this.props.resize_pub_sub.publishWidthChange)
       this.props.resize_pub_sub.subscribeToWidthChange(this.onContainerResize, this.html_grid_id, this.getHover)
       this.props.resize_pub_sub.publishWidthChange()
-    }else if (this.props.onResize) {
-        var onResize=this.props.onResize
-        setTimeout(function () {
-          window.requestAnimationFrame(onResize)
-        }, 0)
-      }
+    } else if (this.props.onResize) {
+      var onResize = this.props.onResize
+      setTimeout(function () {
+        window.requestAnimationFrame(onResize)
+      }, 0)
+    }
   }
 
-  _serverRenderCheck() {
+  _serverRenderCheck () {
     if (this.props.server_render_ssr) {
       invariant(typeof this.props.server_screen_size !== 'undefined', 'ReactHoverGrid must have a server_screen_size property if server_render_ssr')
       invariant(Array.isArray(this.props.server_screen_size), 'ReactHoverGrid, server_screen_size must be an array if server_render_ssr, it is a ' + typeof this.props.server_screen_size)
@@ -64,7 +62,7 @@ class ReactHoverGrid extends React.Component {
     }
   }
 
-  _nestedComponentResizing() {
+  _nestedComponentResizing () {
     if (this.props.resize_nested_component) {
       invariant(typeof this.props.resize_pub_sub === 'object', 'ReactHoverGrid must have a resize_pub_sub property if resize_nested_component')
       invariant(typeof this.props.resize_pub_sub.subscribeToWidthChange === 'function', 'resize_pub_sub must have a subscribeToWidthChange method')
@@ -72,14 +70,14 @@ class ReactHoverGrid extends React.Component {
     }
   }
 
-  _bindMethods() {
+  _bindMethods () {
     this._onBrowserResize = this._onBrowserResize.bind(this)
     this.onContainerResize = this.onContainerResize.bind(this)
     this.setHoverFunction = this.setHoverFunction.bind(this)
     this.getHover = this.getHover.bind(this)
   }
 
-  _ssrOneCharId(hover_grid_id) {
+  _ssrOneCharId (hover_grid_id) {
     invariant(hover_grid_id.endsWith('_grid_id'), "ReactHoverGrid, constructor this.html_grid_id must end with '_grid_id' ")
     if (this.props.server_render_ssr) {
       if (this.props.ssr_grid_id) {
@@ -89,7 +87,7 @@ class ReactHoverGrid extends React.Component {
     return hover_grid_id
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     invariant(this.props.pictureTile_list.length > 0, 'ReactHoverGrid, constructor pictureTile_list must have at least 1 element')
     this.html_grid_id = this._ssrOneCharId(this.props.hover_grid_id)
@@ -101,33 +99,68 @@ class ReactHoverGrid extends React.Component {
     this.window_to_grid_sizes = this._serverRenderCheck()
     this._nestedComponentResizing()
 
-    let not_static_tiles =[]
-    let static_tile = false
-    for(let tile_data of this.props.pictureTile_list){
-      if (typeof tile_data['static_col']!== 'undefined' && typeof tile_data['static_row']!== 'undefined'){
-        static_tile=tile_data
-      }else{
-        not_static_tiles.push(tile_data)
-      }
-    }
+    let {not_static_tiles, static_tile}= this._removeStatics()
+    not_static_tiles = this._initialShuffle(not_static_tiles)
 
     this.state = {
       list_of_tiles: not_static_tiles
-      , static_tile : static_tile
+      , static_tile: static_tile
       , computed_tiles: []
     }
     this._generateCss()
     this._turnOnShuffling()
   }
 
-  componentWillMount() {
+  _initialShuffle (not_static_tiles) {
+    if (this.props.shuffle_seconds && !this.props.server_render_ssr) {
+      not_static_tiles = lodash_shuffle(not_static_tiles)
+    }
+    return not_static_tiles
+  }
+
+  _removeStatics () {
+    let not_static_tiles = []
+    let static_tile = false
+    for (let tile_data of this.props.pictureTile_list) {
+      if (typeof tile_data['static_col'] !== 'undefined' && typeof tile_data['static_row'] !== 'undefined') {
+        static_tile = tile_data
+      } else {
+        not_static_tiles.push(tile_data)
+      }
+    }
+    return {
+      not_static_tiles: not_static_tiles
+      , static_tile: static_tile
+    }
+  }
+
+  _shuffleTiles () {
+    if (IS_BROWSER && !this.is_hovering) {
+      this.state.list_of_tiles = lodash_shuffle(this.state.list_of_tiles)
+      if (this.props.resize_nested_component) {
+        this.onContainerResize(this.last_container_width)
+      } else {
+        this._onBrowserResize()
+      }
+    }
+  }
+
+  _turnOnShuffling () {
+    if (this.props.shuffle_seconds) {
+      const milliseconds = this.props.shuffle_seconds * 1000
+      this._shuffleTiles = this._shuffleTiles.bind(this)
+      setInterval(this._shuffleTiles, milliseconds)
+    }
+  }
+
+  componentWillMount () {
     if (IS_BROWSER && !this.props.resize_nested_component) {
       this._onBrowserResize()
       window.addEventListener('resize', this._onBrowserResize)
     }
   }
 
-  _onBrowserResize() {
+  _onBrowserResize () {
     const container_elem = document.getElementById(this.html_grid_id)
     console.assert(typeof container_elem === 'object', '_onBrowserResize, container_elem not an object')
     const width_container_start = container_elem.clientWidth
@@ -142,7 +175,7 @@ class ReactHoverGrid extends React.Component {
     console.assert(width_container_start === container_elem.clientWidth, '_onBrowserResize, width_container_start === container_elem.clientWidth')
   }
 
-  _showSsrContainerSizes(window_width, width_container_start) {
+  _showSsrContainerSizes (window_width, width_container_start) {
     if (this.not_done_sizes[window_width]) {
       this.hover_tiles_grid_sizes[window_width] = width_container_start
       delete this.not_done_sizes[window_width]
@@ -168,7 +201,7 @@ class ReactHoverGrid extends React.Component {
     }
   }
 
-  _captureContainerSizes(window_width, width_container_start) {   // N.B. for building up server side render information
+  _captureContainerSizes (window_width, width_container_start) {   // N.B. for building up server side render information
     if (process.env.NODE_ENV === 'development') {
       if (typeof this.props.server_screen_size !== 'undefined') {
         if (typeof this.props.server_grid_size !== 'undefined') {
@@ -187,7 +220,7 @@ class ReactHoverGrid extends React.Component {
     }
   }
 
-  _calculateCutOff(current_row_width, extra_width, row_of_tiles) {
+  _calculateCutOff (current_row_width, extra_width, row_of_tiles) {
     console.assert(typeof current_row_width === 'number', '_calculateCutOff, current_row_width not a number')
     console.assert(current_row_width >= 0, '_calculateCutOff, current_row_width not positive')
     console.assert(typeof extra_width === 'number', '_calculateCutOff, extra_width not a number')
@@ -214,20 +247,20 @@ class ReactHoverGrid extends React.Component {
     return tile_cut_offs
   }
 
-  _buildTileRow(image_tiles, width_of_container, current_row) {
+  _buildTileRow (image_tiles, width_of_container, current_row) {
     console.assert(typeof image_tiles === 'object', '_buildTileRow, image_tiles not an object')
     console.assert((Object.keys(image_tiles)).length > 0, '_buildTileRow, image_tiles must have at least 1 tile')
 
     let row = []
     let current_row_width = 0
-    let column_count =0
+    let column_count = 0
     let image_tile
     const image_margin = 2 * this.props.tile_edge
     while (image_tiles.length > 0 && current_row_width < width_of_container) {
       column_count++
       if (this.state.static_tile && column_count === this.state.static_tile['static_col'] && current_row === this.state.static_tile['static_row']) {
-          image_tile = Object.assign({}, this.state.static_tile)
-      }else{
+        image_tile = Object.assign({}, this.state.static_tile)
+      } else {
         image_tile = image_tiles.shift()
       }
       row.push(image_tile)
@@ -255,7 +288,7 @@ class ReactHoverGrid extends React.Component {
     return row
   }
 
-  onContainerResize(my_width) {
+  onContainerResize (my_width) {
     invariant(typeof my_width === 'number', 'onContainerResize, my_width must be a number is ' + my_width + ' ' + this.html_grid_id)
     invariant(my_width >= 0, 'onContainerResize, my_width must be positive is ' + my_width)
     this.last_container_width = my_width
@@ -267,7 +300,7 @@ class ReactHoverGrid extends React.Component {
     })
   }
 
-  _figureTileRows(width_of_container) {
+  _figureTileRows (width_of_container) {
     console.assert(typeof width_of_container === 'number', '_figureTileRows, width_of_container must be a number')
     console.assert(width_of_container >= 0, '_figureTileRows, width_of_container must be positive')
 
@@ -303,13 +336,7 @@ class ReactHoverGrid extends React.Component {
     return adjusted_tiles
   }
 
-
-
-
-
-
-
-  _generateCss() {
+  _generateCss () {
     this.injected_css_styles = this._injectedCssStyles()
     console.assert(this.injected_css_styles.length > 0, '_generateCss, injected_css_styles is emtpy')
     if (IS_NODE && this.window_to_grid_sizes) {
@@ -327,126 +354,104 @@ class ReactHoverGrid extends React.Component {
     }
   }
 
-
-
-  setHoverFunction(is_hovering) {
+  setHoverFunction (is_hovering) {
     this.is_hovering = is_hovering
   }
 
-  getHover() {
+  getHover () {
     return this.is_hovering
   }
 
-  _shuffleTiles() {
-    if (IS_BROWSER && !this.is_hovering) {
-      this.state.list_of_tiles = lodash_shuffle(this.state.list_of_tiles)
-      if (this.props.resize_nested_component) {
-        this.onContainerResize(this.last_container_width)
-      } else {
-        this._onBrowserResize()
-      }
-    }
-  }
-
-  _turnOnShuffling() {
-    if (this.props.shuffle_seconds) {
-      const milliseconds = this.props.shuffle_seconds * 1000
-      this._shuffleTiles = this._shuffleTiles.bind(this)
-      this._shuffleTiles()
-      setInterval(this._shuffleTiles, milliseconds)
-    }
-  }
-
-  _tileViewCss() {
+  _tileViewCss () {
     const hover_grid_row_height = this.props.hover_grid_row_height + 'px'
     const TILE_IMAGE_class = this.class_id_names['TILE_IMAGE_PF']
     let tile_image = ` .${TILE_IMAGE_class}{overflow:hidden`
-                                       + `;height:${hover_grid_row_height}} `
+      + `;height:${hover_grid_row_height}} `
     return tile_image
   }
 
-  _defaultTileHoverCss() {
+  _defaultTileHoverCss () {
     const hover_class = this.class_id_names['TILE_HOVER_TEXT_PF']
     let tile_hover_text = ` .${hover_class}{pointer-events:none`
-                                       + `;opacity:1`
-                                       + `;position:absolute`
-                                       + `;height:100%`
-                                       + `;width:100%} `
+      + `;opacity:1`
+      + `;position:absolute`
+      + `;height:100%`
+      + `;width:100%} `
     return tile_hover_text
   }
 
-  _tileContainerCss() {
+  _tileContainerCss () {
     const tile_cont_class = this.class_id_names['TILE_CONTAINER_PF']
     const tile_edge = this.props.tile_edge + 'px'
     let tile_cont = ` .${tile_cont_class}{margin:${tile_edge}`
-                  + `;position:relative`
-                  + `;float:left`
-                  + `;cursor:pointer`                             
-                  + `;padding:0`
-                  + `;overflow:hidden} `
+      + `;position:relative`
+      + `;float:left`
+      + `;cursor:pointer`
+      + `;padding:0`
+      + `;overflow:hidden} `
     return tile_cont
   }
 
-  _locationCss() {
+  _locationCss () {
     const hor_text_edge_px = this.props.hor_text_edge + 'px'
     const ver_text_edge_px = this.props.ver_text_edge + 'px'
     const hover_grid_row_height_px = this.props.hover_grid_row_height + 'px'
     const tile_class = this.class_id_names['TILE_NORMAL_TEXT_PF']
     const tile_parent = ` .${tile_class}{display:table`
-                                    + `;width:100%`
-                                    + `;height:${hover_grid_row_height_px} }`
+      + `;width:100%`
+      + `;height:${hover_grid_row_height_px} }`
 
     const middle = ` .middle${this.html_grid_id}{display:table-cell`
-                                            + `;vertical-align:middle`
-                                            + `;text-align:center} `
+      + `;vertical-align:middle`
+      + `;text-align:center} `
 
     const name_north_west = gradient_locations.NORTH_WEST + this.html_grid_id
     const north_west = ` .${name_north_west}{display:table-cell`
-                                        + `;vertical-align:top`
-                                        + `;padding:${ver_text_edge_px} 0 0 ${hor_text_edge_px}`
-                                        + `;text-align:left} `
+      + `;vertical-align:top`
+      + `;padding:${ver_text_edge_px} 0 0 ${hor_text_edge_px}`
+      + `;text-align:left} `
 
     const name_north = gradient_locations.NORTH + this.html_grid_id
     const north = ` .${name_north}{display:table-cell`
-                              + `;vertical-align:top`
-                              + `;padding:${ver_text_edge_px} 0 0`
-                              + `;text-align:center} `
+      + `;vertical-align:top`
+      + `;padding:${ver_text_edge_px} 0 0`
+      + `;text-align:center} `
 
     const name_north_east = gradient_locations.NORTH_EAST + this.html_grid_id
     const north_east = ` .${name_north_east}{display:table-cell`
-                                        + `;padding:${ver_text_edge_px} ${hor_text_edge_px} 0`
-                                        + `;vertical-align:top`
-                                        + `;text-align:right} `
+      + `;padding:${ver_text_edge_px} ${hor_text_edge_px} 0`
+      + `;vertical-align:top`
+      + `;text-align:right} `
 
     const name_east = gradient_locations.EAST + this.html_grid_id
     const east = ` .${name_east}{display:table-cell`
-                            + `;padding:0 ${hor_text_edge_px} 0`
-                            + `;vertical-align:middle`
-                            + `;text-align:right} `
+      + `;padding:0 ${hor_text_edge_px} 0`
+      + `;vertical-align:middle`
+      + `;text-align:right} `
 
     const name_south_east = gradient_locations.SOUTH_EAST + this.html_grid_id
     const south_east = ` .${name_south_east}{display:table-cell`
-                                        + `;padding:0 ${hor_text_edge_px} ${ver_text_edge_px}`
-                                        + `;vertical-align:bottom`
-                                        + `;text-align:right} `
+      + `;padding:0 ${hor_text_edge_px} ${ver_text_edge_px}`
+      + `;vertical-align:bottom`
+      + `;text-align:right} `
 
     const name_south = gradient_locations.SOUTH + this.html_grid_id
     const south = ` .${name_south}{display:table-cell`
-                              + `;padding:0 0 ${ver_text_edge_px}`
-                              + `;vertical-align:bottom`
-                              + `;text-align:center} `
+      + `;padding:0 0 ${ver_text_edge_px}`
+      + `;vertical-align:bottom`
+      + `;text-align:center} `
 
     const name_south_west = gradient_locations.SOUTH_WEST + this.html_grid_id
     const south_west = ` .${name_south_west}{display:table-cell`
-                                        + `;padding:0 0 ${ver_text_edge_px} ${hor_text_edge_px}`
-                                        + `;vertical-align:bottom`
-                                        + `;text-align:left} `
+      + `;padding:0 0 ${ver_text_edge_px} ${hor_text_edge_px}`
+      + `;vertical-align:bottom`
+      + `;text-align:left} `
 
     const name_west = gradient_locations.WEST + this.html_grid_id
     const west = ` .${name_west}{display:table-cell`
-                            + `;padding:0 0 0 ${hor_text_edge_px}`
-                            + `;vertical-align:middle`
-                            + `;text-align:left} `
+      + `;padding:0 0 0 ${hor_text_edge_px}`
+      + `;vertical-align:middle`
+      + `;text-align:left} `
     let location_css = tile_parent +
       north_west + north + north_east +
       west + middle + east +
@@ -454,7 +459,7 @@ class ReactHoverGrid extends React.Component {
     return location_css
   }
 
-  _injectedCssStyles() {
+  _injectedCssStyles () {
     const location_css = this._locationCss()
     const tile_container_css = this._tileContainerCss()
     const default_TILE_HOVER_TEXT_css = this._defaultTileHoverCss()
@@ -463,7 +468,7 @@ class ReactHoverGrid extends React.Component {
     return injected_css_styles
   }
 
-  _cascadeGridToEmptyTile(current_tile, grid_to_tile_name) {
+  _cascadeGridToEmptyTile (current_tile, grid_to_tile_name) {
     console.assert(typeof current_tile === 'object', '_cascadeGridToEmptyTile, current_tile not an object')
     console.assert(typeof grid_to_tile_name === 'string', '_cascadeGridToEmptyTile, grid_to_tile_name not an string')
     if (!current_tile[grid_to_tile_name]) {
@@ -474,7 +479,7 @@ class ReactHoverGrid extends React.Component {
     return current_tile
   }
 
-  _cascadeStyles(current_tile) {
+  _cascadeStyles (current_tile) {
     console.assert(typeof current_tile === 'object', '_cascadeStyles, current_tile not an object')
     const cascade_properties = ['normal_area', 'hover_area', 'normal_style', 'hover_style', 'normal_title_style'
       , 'normal_text_style', 'hover_title_style', 'hover_text_style', 'hover_gradient', 'normal_gradient'
@@ -488,7 +493,8 @@ class ReactHoverGrid extends React.Component {
     }
     return current_tile
   }
-  _renderServerMultiples(google_font_links) {
+
+  _renderServerMultiples (google_font_links) {
     let all_server_widths = []
     for (let browser_width in this.state.pictures_tiles_rows_server) {
       const adjusted_pictures = this.state.pictures_tiles_rows_server[browser_width]
@@ -504,31 +510,33 @@ class ReactHoverGrid extends React.Component {
     const media_hide_grids = this.window_to_grid_sizes.showMatchingSizedGridCss()
     let multiple_widths = (
       <div style={edge_styles}>
-        <style dangerouslySetInnerHTML={{__html: this.props.inject_css_rules}}/>
-        <div dangerouslySetInnerHTML={{__html: google_font_links}}/>
-        <style dangerouslySetInnerHTML={{__html: media_hide_grids}}/>
-        <style dangerouslySetInnerHTML={{__html: this.injected_css_styles}}/>
+        <style dangerouslySetInnerHTML={{__html: this.props.inject_css_rules}} />
+        <div dangerouslySetInnerHTML={{__html: google_font_links}} />
+        <style dangerouslySetInnerHTML={{__html: media_hide_grids}} />
+        <style dangerouslySetInnerHTML={{__html: this.injected_css_styles}} />
         {all_server_widths}
       </div>
     )
     return multiple_widths
   }
-  _renderBrowserExact(google_font_links) {
+
+  _renderBrowserExact (google_font_links) {
     const adjusted_pictures = this.state.computed_tiles
     const picture_list = this._cssInjectedPictures(adjusted_pictures)
     const border_adjust = {paddingLeft: this.props.tile_edge, paddingRight: this.props.tile_edge}
     return (
       <div style={border_adjust}>
         <div>
-          <style dangerouslySetInnerHTML={{__html: this.props.inject_css_rules}}/>
-          <div dangerouslySetInnerHTML={{__html: google_font_links}}/>
-          <style dangerouslySetInnerHTML={{__html: this.injected_css_styles}}/>
+          <style dangerouslySetInnerHTML={{__html: this.props.inject_css_rules}} />
+          <div dangerouslySetInnerHTML={{__html: google_font_links}} />
+          <style dangerouslySetInnerHTML={{__html: this.injected_css_styles}} />
           {picture_list}
         </div>
       </div>
     )
   }
-  _cssInjectedPictures(adjusted_pictures) {
+
+  _cssInjectedPictures (adjusted_pictures) {
     console.assert(typeof adjusted_pictures === 'object', '_cssInjectedPictures, adjusted_pictures not an object')
     const picture_list = adjusted_pictures.map((tile_before_css, tile_index) => {
       const current_tile = this._cascadeStyles(tile_before_css)
@@ -538,56 +546,56 @@ class ReactHoverGrid extends React.Component {
       let is_static_tile = false
       if (current_tile['static_col'] && current_tile['static_row']) {
         is_static_tile = true
-        
+
       }
-      
+
       return <PictureTile
-              key={tile_index}
+        key={tile_index}
 
-              picture_container_id={picture_container_id}
-              setHoverFunction={this.setHoverFunction}
+        picture_container_id={picture_container_id}
+        setHoverFunction={this.setHoverFunction}
 
-              is_static_tile={is_static_tile}
-              
-              hover_grid_id={this.props.hover_grid_id}
-              ssr_grid_id={this.props.ssr_grid_id}
+        is_static_tile={is_static_tile}
 
-              normal_area={current_tile.normal_area}
-              hover_area={current_tile.hover_area}
-              normal_style={current_tile.normal_style}
-              hover_style={current_tile.hover_style}
+        hover_grid_id={this.props.hover_grid_id}
+        ssr_grid_id={this.props.ssr_grid_id}
 
-              hover_gradient={current_tile.hover_gradient}
-              normal_gradient={current_tile.normal_gradient}
-              hover_linear_gradient={current_tile.hover_linear_gradient}
-              normal_linear_gradient={current_tile.normal_linear_gradient}
+        normal_area={current_tile.normal_area}
+        hover_area={current_tile.hover_area}
+        normal_style={current_tile.normal_style}
+        hover_style={current_tile.hover_style}
 
-              normal_title_style={current_tile.normal_title_style}
-              normal_text_style={current_tile.normal_text_style}
-              hover_title_style={current_tile.hover_title_style}
-              hover_text_style={current_tile.hover_text_style}
+        hover_gradient={current_tile.hover_gradient}
+        normal_gradient={current_tile.normal_gradient}
+        hover_linear_gradient={current_tile.hover_linear_gradient}
+        normal_linear_gradient={current_tile.normal_linear_gradient}
 
-              filter_normal={current_tile.filter_normal}
-              filter_hover={current_tile.filter_hover}
+        normal_title_style={current_tile.normal_title_style}
+        normal_text_style={current_tile.normal_text_style}
+        hover_title_style={current_tile.hover_title_style}
+        hover_text_style={current_tile.hover_text_style}
+
+        filter_normal={current_tile.filter_normal}
+        filter_hover={current_tile.filter_hover}
 
 
-              adjusted_tile_width={current_tile.adjusted_tile_width}
-              picture_width={current_tile.picture_width}
-              left_picture_margin={current_tile.left_picture_margin}
-              picture_src={current_tile.picture_src}
-              link_url={current_tile.link_url}
+        adjusted_tile_width={current_tile.adjusted_tile_width}
+        picture_width={current_tile.picture_width}
+        left_picture_margin={current_tile.left_picture_margin}
+        picture_src={current_tile.picture_src}
+        link_url={current_tile.link_url}
 
-              normal_title={current_tile.normal_title}
-              normal_info={current_tile.normal_info}
-              hover_title={current_tile.hover_title}
-              hover_info={current_tile.hover_info}
+        normal_title={current_tile.normal_title}
+        normal_info={current_tile.normal_info}
+        hover_title={current_tile.hover_title}
+        hover_info={current_tile.hover_info}
 
       />
     })
     return picture_list
   }
 
-  _googleLinks() {
+  _googleLinks () {
     let google_font_links = ''
     if (this.props.google_font_link) {
       if (typeof this.props.google_font_link === 'object') {
@@ -601,7 +609,7 @@ class ReactHoverGrid extends React.Component {
     return google_font_links
   }
 
-  render() {
+  render () {
     let google_font_links = this._googleLinks()
     if (IS_NODE) {
       if (this.props.server_render_ssr) {
@@ -614,12 +622,11 @@ class ReactHoverGrid extends React.Component {
     }
   }
 
-    componentDidUpdate(){
-     if (this.props.onResize) {
-       this.props.onResize()
-     }
-   }
-
+  componentDidUpdate () {
+    if (this.props.onResize) {
+      this.props.onResize()
+    }
+  }
 
 }
 

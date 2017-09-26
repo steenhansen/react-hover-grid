@@ -32,16 +32,16 @@ module.exports = function (post_fix) {
   TILE_HOVER_TEXT_PF = TILE_HOVER_TEXT_PF + post_fix
   TILE_IMAGE_PF = TILE_IMAGE_PF + post_fix
   TILE_CONTAINER_PF = TILE_CONTAINER_PF + post_fix
-  TILE_NORMAL_TEXT_PF = TILE_NORMAL_TEXT_PF + post_fix        
+  TILE_NORMAL_TEXT_PF = TILE_NORMAL_TEXT_PF + post_fix
 
-  function serverWidthId(browser_width, id_postfix) {
+  function serverWidthId (browser_width, id_postfix) {
     const server_width_name = SERVER_WIDTH_ID + browser_width + id_postfix
     return server_width_name
   }
 
   return {
     SERVER_WIDTH_ID, SERVER_KEY_ID, TILE_HOVER_TEXT_PF, TEXT_UP, TILE_IMAGE_PF, TILE_CONTAINER_PF
-    , TILE_NORMAL_TEXT_PF , HOVER_TEXT_POSTFIX, NORMAL_TEXT_POSTFIX, IMAGE_POSTFIX, IMAGE_ID
+    , TILE_NORMAL_TEXT_PF, HOVER_TEXT_POSTFIX, NORMAL_TEXT_POSTFIX, IMAGE_POSTFIX, IMAGE_ID
     , serverWidthId
   }
 }

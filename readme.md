@@ -1,12 +1,12 @@
  ![visual explanation](https://react-hover-grid.herokuapp.com/react_hover_grid.jpg)
 
-An automatically re-sizing React gallery component with many hovering capabilities. [Server side rendering](https://react-hover-grid.herokuapp.com/ssr_with_js_grid) is also possible. No need to enter images dimensions as Gulp files control all image sizes. Can also work [inside a react-split-pane](https://react-hover-grid.herokuapp.com/resizable_splitter_grid) component, or be contained in a div [which changes size](https://react-hover-grid.herokuapp.com/shrink_grow_grid) via timers.
+An automatically resizing React gallery component with many hovering capabilities. [Server side rendering](https://react-hover-grid.herokuapp.com/ssr_with_js_grid) is also possible. No need to enter images dimensions as Gulp files control all image sizes. Can also work [inside a react-split-pane](https://react-hover-grid.herokuapp.com/resizable_splitter_grid) component, or be contained in a div [which changes size](https://react-hover-grid.herokuapp.com/shrink_grow_grid) via timers.
 
-This component is virtually impossible to use without Gulp and Webpack as they provide image re-sizing.
+This component is virtually impossible to use without Gulp and Webpack as they provide image resizing.
 
-Live [react-hover-grid examples](https://react-hover-grid.herokuapp.com/).
+Live [gmap-dragdrop-react examples](https://react-hover-grid.herokuapp.com/).
 
-Full [web-server on Git-hub with examples](https://github.com/steenhansen/react-hover-grid-examples).
+Full [webserver on GitHub with examples](https://github.com/steenhansen/react-hover-grid-examples).
 
 ## Install
 

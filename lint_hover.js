@@ -21,9 +21,9 @@ var lint_text = '                                          hover lint'
 gulp.task('lint_hover', function () {
   console.log(gutil.colors[start_text_color](lint_text))
   return gulp.src(my_lint_dirs)
-          .pipe(eslint())
-          .pipe(eslint.format())
-          .pipe(debug({title: 'lint_HOVER_check:'}))
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(debug({title: 'lint_HOVER_check:'}))
 })
 
 

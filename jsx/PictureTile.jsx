@@ -1,6 +1,6 @@
 'use strict'
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import gradient_locations from './GradientLocations.js'
 import StyleOrJsx from '../StyleOrJsx.js'
@@ -34,10 +34,10 @@ class PictureTile extends Component {
   ]
 
   static LINEAR_GRADIENT =
-          PropTypes.shape({
-            clear_percent: PropTypes.number.isRequired
-            , gradient_rgba: PropTypes.string.isRequired
-          })
+    PropTypes.shape({
+      clear_percent: PropTypes.number.isRequired
+      , gradient_rgba: PropTypes.string.isRequired
+    })
 
   static BASE_TILE_SHAPE = PropTypes.shape({
     picture_src: PropTypes.string.isRequired
@@ -45,7 +45,7 @@ class PictureTile extends Component {
     , picture_height: PropTypes.number
   })
 
-  _imageDivStyles() {
+  _imageDivStyles () {
     const TILE_IMAGE_class = this.class_id_names['TILE_IMAGE_PF']
     let container_styles = new StyleOrJsx(TILE_IMAGE_class)
     container_styles.addStyling({backgroundPosition: this.props.left_picture_margin})
@@ -57,7 +57,7 @@ class PictureTile extends Component {
     return {normal_classNames: normal_classNames, normal_jsx_styles: normal_jsx_styles}
   }
 
-  _hoverDivStyles() {
+  _hoverDivStyles () {
     const TILE_HOVER_TEXT_class = this.class_id_names['TILE_HOVER_TEXT_PF']
     let container_styles = new StyleOrJsx(TILE_HOVER_TEXT_class)
     container_styles.addStyling(this.props.hover_style)
@@ -66,7 +66,7 @@ class PictureTile extends Component {
     return {hover_classNames: hover_classNames, hover_jsx_styles: hover_jsx_styles}
   }
 
-  _hoverGradientStyles() {
+  _hoverGradientStyles () {
     let gradient_jsx = ''
     if (typeof this.props.hover_linear_gradient !== 'undefined') {
       gradient_jsx = gradient_locations.buildGradient(this.props.hover_linear_gradient, this.props.hover_area)
@@ -80,7 +80,7 @@ class PictureTile extends Component {
     return {gradient_classNames: gradient_classNames, gradient_jsx_styles: gradient_jsx_styles}
   }
 
-  _hoverText(hover_show_id) {
+  _hoverText (hover_show_id) {
     const {hover_classNames:hover_classNames, hover_jsx_styles:hover_jsx_styles} = this._hoverDivStyles()
     const {gradient_classNames:gradient_classNames, gradient_jsx_styles:gradient_jsx_styles} = this._hoverGradientStyles()
     const location_style = gradient_locations.directionClass(this.props.hover_area, this.css_grid_id)
@@ -101,7 +101,7 @@ class PictureTile extends Component {
     </div> )
   }
 
-  _normalDivStyles() {
+  _normalDivStyles () {
     const normal_css = {marginTop: '0px', position: 'absolute'}
     const tile_class = this.class_id_names['TILE_NORMAL_TEXT_PF']
     let view_styles = new StyleOrJsx(tile_class, normal_css)
@@ -111,7 +111,7 @@ class PictureTile extends Component {
     return {view_classNames: view_classNames, view_jsx_styles: view_jsx_styles}
   }
 
-  _normalGradientStyles() {
+  _normalGradientStyles () {
     let gradient_jsx = ''
     if (typeof this.props.normal_linear_gradient !== 'undefined') {
       gradient_jsx = gradient_locations.buildGradient(this.props.normal_linear_gradient, this.props.normal_area)
@@ -125,7 +125,7 @@ class PictureTile extends Component {
     return {gradient_classNames: gradient_classNames, gradient_jsx_styles: gradient_jsx_styles}
   }
 
-  _plainText(normal_show_id) {
+  _plainText (normal_show_id) {
     const {view_classNames:view_classNames, view_jsx_styles:view_jsx_styles} = this._normalDivStyles()
     const {gradient_classNames:gradient_classNames, gradient_jsx_styles:gradient_jsx_styles} = this._normalGradientStyles()
     const location_style = gradient_locations.directionClass(this.props.normal_area, this.css_grid_id)
@@ -145,7 +145,7 @@ class PictureTile extends Component {
     </div> )
   }
 
- _imageUrl() {
+  _imageUrl () {
     let link_url
     if (typeof this.props.link_url === 'undefined') {
       link_url = this._imageSource(ORIGINAL_IMAGES)
@@ -155,8 +155,8 @@ class PictureTile extends Component {
     return link_url
   }
 
-  _imageSource(image_type) {
-     const image_folder = this.props.hover_grid_id.replace('_id', '_images')
+  _imageSource (image_type) {
+    const image_folder = this.props.hover_grid_id.replace('_id', '_images')
     let image_src
     if (image_type === '') {
       image_src = IMAGES_DIR + '/' + image_folder + '/' + this.props.picture_src
@@ -166,11 +166,11 @@ class PictureTile extends Component {
     return image_src
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     if (this.props.ssr_grid_id) {
       this.css_grid_id = this.props.ssr_grid_id     // N.B. use short version 's' of 's_grid_id' for css
-    }else{
+    } else {
       this.css_grid_id = this.props.hover_grid_id   // N.B. use long version 'my_dogs_grid_id' for css
     }
     this.class_id_names = require('./classIdNames.js')(this.css_grid_id)
@@ -180,7 +180,7 @@ class PictureTile extends Component {
     }
   }
 
-  _hoverTitleStyles() {
+  _hoverTitleStyles () {
     let title_styles = new StyleOrJsx()
     title_styles.addStyling(this.props.hover_title_style)
     const title_classNames = title_styles.collectedClassNames()
@@ -188,7 +188,7 @@ class PictureTile extends Component {
     return {title_classNames: title_classNames, title_jsx_styles: title_jsx_styles}
   }
 
-  _hoverInfoStyles() {
+  _hoverInfoStyles () {
     let info_styles = new StyleOrJsx()
     info_styles.addStyling(this.props.hover_info_style)
     const info_classNames = info_styles.collectedClassNames()
@@ -196,7 +196,7 @@ class PictureTile extends Component {
     return {info_classNames: info_classNames, info_jsx_styles: info_jsx_styles}
   }
 
-  _normalInfoStyles() {
+  _normalInfoStyles () {
     let info_styles = new StyleOrJsx()
     info_styles.addStyling(this.props.normal_info_style)
     const info_classNames = info_styles.collectedClassNames()
@@ -204,7 +204,7 @@ class PictureTile extends Component {
     return {info_classNames: info_classNames, info_jsx_styles: info_jsx_styles}
   }
 
-  _normalTitleStyles() {
+  _normalTitleStyles () {
     let title_styles = new StyleOrJsx()
     title_styles.addStyling(this.props.normal_title_style)
     const title_classNames = title_styles.collectedClassNames()
@@ -212,7 +212,7 @@ class PictureTile extends Component {
     return {title_classNames: title_classNames, title_jsx_styles: title_jsx_styles}
   }
 
-  _normalImage() {
+  _normalImage () {
     const image_id = this.class_id_names['IMAGE_ID'] + this.props.picture_container_id
     const image_src = this._imageSource(TILE_SIZED_IMAGES)
     let image_styles = new StyleOrJsx('', {width: this.props.picture_width, cursor: 'pointer'})
@@ -221,41 +221,41 @@ class PictureTile extends Component {
     const image_jsx_styles = image_styles.collectedJsx()
     return {
       image_id: image_id
-      ,image_src: image_src
-      ,image_classNames: image_classNames
-      ,image_jsx_styles: image_jsx_styles
+      , image_src: image_src
+      , image_classNames: image_classNames
+      , image_jsx_styles: image_jsx_styles
     }
   }
 
-  _imageTile() {
+  _imageTile () {
     const {normal_classNames:normal_classNames, normal_jsx_styles:normal_jsx_styles} = this._imageDivStyles()
     const {image_id:image_id, image_src:image_src, image_classNames:image_classNames, image_jsx_styles:image_jsx_styles} = this._normalImage()
     let static_tile_id = ''
-    if (this.props.is_static_tile){
-      static_tile_id ='the_static_tile'
+    if (this.props.is_static_tile) {
+      static_tile_id = 'the_static_tile'
 
     }
 
     return (<div className={normal_classNames} style={normal_jsx_styles} id={static_tile_id}>
-      <img id={image_id} src={image_src} style={image_jsx_styles} className={image_classNames}/>
+      <img id={image_id} src={image_src} style={image_jsx_styles} className={image_classNames} />
     </div> )
   }
 
-  _imageHover(is_hovering) {
+  _imageHover (is_hovering) {
     this.props.setHoverFunction(is_hovering)
   }
 
-  _showHideCss() {
+  _showHideCss () {
     const picture_container_id = this.props.picture_container_id
     const hover_show_id = picture_container_id + this.class_id_names['HOVER_TEXT_POSTFIX']
     const before_show_id = picture_container_id + this.class_id_names['NORMAL_TEXT_POSTFIX']
     const normal_show_id = picture_container_id + this.class_id_names['IMAGE_POSTFIX']
     let my_styles = ` #${picture_container_id}:hover #${hover_show_id}{opacity:1}`
-                  + ` #${picture_container_id} #${hover_show_id}{opacity:0}`
-                  + ` #${picture_container_id}:hover #${before_show_id}{opacity:0}`
-                  + ` #${picture_container_id} #${before_show_id}{opacity:1}`
-                  + ` #${picture_container_id}:hover #${normal_show_id}{opacity:0}`
-                  + ` #${picture_container_id} #${normal_show_id}{opacity:1} `
+      + ` #${picture_container_id} #${hover_show_id}{opacity:0}`
+      + ` #${picture_container_id}:hover #${before_show_id}{opacity:0}`
+      + ` #${picture_container_id} #${before_show_id}{opacity:1}`
+      + ` #${picture_container_id}:hover #${normal_show_id}{opacity:0}`
+      + ` #${picture_container_id} #${normal_show_id}{opacity:1} `
     if (typeof this.props.filter_hover !== 'undefined') {
       my_styles += ` #${picture_container_id}:hover {filter: ${this.props.filter_hover} } `
     }
@@ -265,7 +265,7 @@ class PictureTile extends Component {
     return my_styles
   }
 
-  render() {
+  render () {
     const mouse_hover_text = this._hoverText(this.props.picture_container_id + this.class_id_names['HOVER_TEXT_POSTFIX'])
     const plain_text = this._plainText(this.props.picture_container_id + this.class_id_names['NORMAL_TEXT_POSTFIX'])
     const image_tile = this._imageTile(this.props.picture_container_id + this.class_id_names['IMAGE_POSTFIX'])
@@ -277,15 +277,13 @@ class PictureTile extends Component {
                    onMouseEnter={() => this._imageHover(true)  }
                    onMouseLeave={() => this._imageHover(false) }>
       <a href={image_url}>
-        <style dangerouslySetInnerHTML={{__html: my_styles}}/>
+        <style dangerouslySetInnerHTML={{__html: my_styles}} />
         {mouse_hover_text}
         {plain_text}
         {image_tile}
       </a>
     </div> )
   }
-
-
 
 }
 PictureTile.displayName = 'PictureTile'
@@ -324,7 +322,7 @@ PictureTile.propTypes = {
   , hover_title: PropTypes.string
   , hover_info: PropTypes.string
 
-  , is_static_tile:PropTypes.bool
+  , is_static_tile: PropTypes.bool
 }
 
 PictureTile.defaultProps = {

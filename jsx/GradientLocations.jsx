@@ -25,7 +25,7 @@ let GradientLocations = (function () {
   angle_directions[SOUTH_WEST] = 225
   angle_directions[WEST] = 270
 
-  function directionClass(text_location, container_id) {
+  function directionClass (text_location, container_id) {
     let gradient_postfix
     if (text_location in angle_directions) {
       gradient_postfix = text_location + container_id
@@ -35,7 +35,7 @@ let GradientLocations = (function () {
     return gradient_postfix
   }
 
-  function buildGradient(linear_gradient, area_type) {
+  function buildGradient (linear_gradient, area_type) {
     let background_style
     if (linear_gradient.clear_percent) {
       let gradient_angle = _gradientAngle(area_type)
@@ -51,7 +51,7 @@ let GradientLocations = (function () {
     return ''
   }
 
-  function _gradientAngle(text_location) {
+  function _gradientAngle (text_location) {
     if (text_location in angle_directions) {
       let gradient_angle = angle_directions[text_location] + 'deg'
       return gradient_angle
@@ -60,7 +60,7 @@ let GradientLocations = (function () {
     }
   }
 
-  function _rgbaStartFromZero(gradient_rgba) {
+  function _rgbaStartFromZero (gradient_rgba) {
     console.assert(gradient_rgba.startsWith('rgba('), '_rgbaStartFromZero, gradient_rgba does not start correctly')
     console.assert(gradient_rgba.split(",").length === 4, '_rgbaStartFromZero, gradient_rgba wrong number of commmas')
     console.assert(gradient_rgba.endsWith(')'), '_rgbaStartFromZero, gradient_rgba does not end with a bracket')

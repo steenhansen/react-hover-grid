@@ -1,11 +1,11 @@
 'use strict'
 
-function StyleOrJsx(className_list, jsx_styles) {
+function StyleOrJsx (className_list, jsx_styles) {
   className_list = (typeof className_list !== 'undefined') ? className_list : ''
   jsx_styles = (typeof jsx_styles !== 'undefined') ? jsx_styles : {}
-  var members = Object.assign({}, {className_list:className_list, jsx_styles:jsx_styles})
+  var members = Object.assign({}, {className_list: className_list, jsx_styles: jsx_styles})
 
- let addStyling = function (className_or_jsx) {
+  let addStyling = function (className_or_jsx) {
     if (typeof className_or_jsx === 'undefined') {
       return ''
     } else if (typeof className_or_jsx === 'object') {
@@ -21,7 +21,7 @@ function StyleOrJsx(className_list, jsx_styles) {
     }
   }
 
- let collectedJsx = function () {
+  let collectedJsx = function () {
     if (Object.keys(members.jsx_styles).length === 0) {
       return {}
     } else {
@@ -40,8 +40,8 @@ function StyleOrJsx(className_list, jsx_styles) {
 
   return Object.freeze({
     addStyling: addStyling
-    ,collectedJsx: collectedJsx
-    ,collectedClassNames:collectedClassNames
+    , collectedJsx: collectedJsx
+    , collectedClassNames: collectedClassNames
   })
 }
 

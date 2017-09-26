@@ -9,7 +9,7 @@ let ScreenSizeToGrid = (function () {
   let server_grid_size
   let class_id_names
 
-  function ScreenSizeToGrid(id_of_container, screen_size_match, grid_size_match) {
+  function ScreenSizeToGrid (id_of_container, screen_size_match, grid_size_match) {
     console.assert(typeof id_of_container === 'string', 'ScreenSizeToGrid, id_of_container must be a string is ' + id_of_container)
     console.assert(Array.isArray(screen_size_match), 'ScreenSizeToGrid, screen_size_match is not an array is ' + screen_size_match)
     console.assert(Array.isArray(grid_size_match), 'ScreenSizeToGrid, grid_size_match is not an array is ' + grid_size_match)
@@ -24,16 +24,16 @@ let ScreenSizeToGrid = (function () {
   /*
    Before first render by React, the css @media rules fake a valid grid
    server_screen_size={
-      320 : 200,             // screen sizes from 320px to 767px will get a 200px wide grid
-      768 : 700,             // screen sizes from 768px to 1023px will get a 700px wide grid
-      1024 :1000             // screen sizes above 1023px will get a 1000px wide grid
+   320 : 200,             // screen sizes from 320px to 767px will get a 200px wide grid
+   768 : 700,             // screen sizes from 768px to 1023px will get a 700px wide grid
+   1024 :1000             // screen sizes above 1023px will get a 1000px wide grid
    }
 
    */
-  function _gridWidthFromScreen() {
+  function _gridWidthFromScreen () {
     let width_of_grid = 0
     const window_width = misc_functions.windowWidth()
-    console.assert(Array.isArray(server_screen_size), 'ScreenSizeToGrid._gridWidthFromScreen, server_screen_size is not an array is '+server_screen_size)
+    console.assert(Array.isArray(server_screen_size), 'ScreenSizeToGrid._gridWidthFromScreen, server_screen_size is not an array is ' + server_screen_size)
     for (let screen_index = 0, max_screen_index = server_screen_size.length; screen_index < max_screen_index; screen_index++) {
       let browser_width = server_screen_size[screen_index]
       if (browser_width > window_width) {
@@ -59,10 +59,10 @@ let ScreenSizeToGrid = (function () {
    #server_width_1024px-my_id { display: block } }
    */
 
-  function _displayBlockNone(screen_index, min_width, max_width) {
+  function _displayBlockNone (screen_index, min_width, max_width) {
     console.assert(screen_index >= 0, 'ScreenSizeToGrid, _displayBlockNone has bad screen_index is' + screen_index)
     console.assert(min_width > 0, 'ScreenSizeToGrid, _displayBlockNone has bad min_width is ' + min_width)
-    console.assert(max_width > 0, 'ScreenSizeToGrid, _displayBlockNone has bad max_width is '+ max_width)
+    console.assert(max_width > 0, 'ScreenSizeToGrid, _displayBlockNone has bad max_width is ' + max_width)
     console.assert(min_width < max_width, 'ScreenSizeToGrid, _displayBlockNone has bad min max widths is ' + min_width + '<>' + max_width)
     let min_max_rule = ` @media all and (min-width: ${min_width}px) and (max-width:${max_width}px) {`
     for (let screen_display = 0, max_screen_display = server_screen_size.length; screen_display < max_screen_display; screen_display++) {
@@ -78,7 +78,7 @@ let ScreenSizeToGrid = (function () {
     return min_max_rule
   }
 
-  function showMatchingSizedGridCss() {
+  function showMatchingSizedGridCss () {
     let screen_rules_template = ''
     let max_width
     for (let screen_index = 0, max_screen_index = server_screen_size.length; screen_index < max_screen_index; screen_index++) {

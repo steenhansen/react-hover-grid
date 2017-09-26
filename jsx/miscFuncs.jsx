@@ -1,13 +1,13 @@
 "use strict"
 
-function _windowWidth() {
+function _windowWidth () {
   const window_width = window.innerWidth
-          || document.documentElement.clientWidth
-          || document.body.clientWidth
+    || document.documentElement.clientWidth
+    || document.body.clientWidth
   return window_width
 }
 
-function _getComputedWidth(grid_id) {
+function _getComputedWidth (grid_id) {
   const element = document.getElementById(grid_id)
   if (element === null) {
     return null
@@ -19,5 +19,4 @@ function _getComputedWidth(grid_id) {
   }
 }
 
-
-module.exports = {_windowWidth,  _getComputedWidth}
+module.exports = {_windowWidth, _getComputedWidth}
