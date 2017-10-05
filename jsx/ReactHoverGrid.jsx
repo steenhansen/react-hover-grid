@@ -275,14 +275,12 @@ class ReactHoverGrid extends React.Component {
         let image_tile = row[i]
         image_tile.left_picture_margin = -Math.abs(Math.floor(pixelsToRemove / 2))
         image_tile.adjusted_tile_width = image_tile.picture_width - pixelsToRemove
-        image_tile.center_last_row = false
       }
     } else {
       for (let j in row) {
         let image_tile = row[j]
         image_tile.left_picture_margin = 0
         image_tile.adjusted_tile_width = image_tile.picture_width
-        image_tile.center_last_row = true
       }
     }
     return row
@@ -482,7 +480,7 @@ class ReactHoverGrid extends React.Component {
   _cascadeStyles (current_tile) {
     console.assert(typeof current_tile === 'object', '_cascadeStyles, current_tile not an object')
     const cascade_properties = ['normal_area', 'hover_area', 'normal_style', 'hover_style', 'normal_title_style'
-      , 'normal_text_style', 'hover_title_style', 'hover_text_style', 'hover_gradient', 'normal_gradient'
+      , 'normal_info_style', 'hover_title_style', 'hover_info_style', 'hover_gradient', 'normal_gradient'
       , 'hover_linear_gradient', 'normal_linear_gradient', 'filter_normal', 'filter_hover']
     const that = this
     cascade_properties.forEach(function (cascade_element) {
@@ -546,19 +544,13 @@ class ReactHoverGrid extends React.Component {
       let is_static_tile = false
       if (current_tile['static_col'] && current_tile['static_row']) {
         is_static_tile = true
-
       }
 
       return <PictureTile
         key={tile_index}
 
-        picture_container_id={picture_container_id}
-        setHoverFunction={this.setHoverFunction}
+        picture_src={current_tile.picture_src}
 
-        is_static_tile={is_static_tile}
-
-        hover_grid_id={this.props.hover_grid_id}
-        ssr_grid_id={this.props.ssr_grid_id}
 
         normal_area={current_tile.normal_area}
         hover_area={current_tile.hover_area}
@@ -571,24 +563,34 @@ class ReactHoverGrid extends React.Component {
         normal_linear_gradient={current_tile.normal_linear_gradient}
 
         normal_title_style={current_tile.normal_title_style}
-        normal_text_style={current_tile.normal_text_style}
+        normal_info_style={current_tile.normal_info_style}
         hover_title_style={current_tile.hover_title_style}
-        hover_text_style={current_tile.hover_text_style}
+        hover_info_style={current_tile.hover_info_style}
 
         filter_normal={current_tile.filter_normal}
         filter_hover={current_tile.filter_hover}
 
 
-        adjusted_tile_width={current_tile.adjusted_tile_width}
-        picture_width={current_tile.picture_width}
-        left_picture_margin={current_tile.left_picture_margin}
-        picture_src={current_tile.picture_src}
+
+        
+
         link_url={current_tile.link_url}
 
         normal_title={current_tile.normal_title}
         normal_info={current_tile.normal_info}
         hover_title={current_tile.hover_title}
         hover_info={current_tile.hover_info}
+
+
+        rgh_picture_container_id={picture_container_id}
+        rgh_setHoverFunction={this.setHoverFunction}
+        rgh_hover_grid_id={this.props.hover_grid_id}
+        rgh_ssr_grid_id={this.props.ssr_grid_id}
+        rgh_is_static_tile={is_static_tile}
+
+        rgh_adjusted_tile_width={current_tile.adjusted_tile_width}
+        rgh_picture_width={current_tile.picture_width}
+        rgh_left_picture_margin={current_tile.left_picture_margin}
 
       />
     })
@@ -646,9 +648,9 @@ ReactHoverGrid.propTypes = {
   , google_font_link: PropTypes.oneOfType(ReactHoverGrid.STRING_OR_ARRAY)
 
   , normal_title_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
-  , normal_text_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
+  , normal_info_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
   , hover_title_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
-  , hover_text_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
+  , hover_info_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
 
   , inject_css_rules: PropTypes.string
   , max_rows: PropTypes.number
@@ -661,8 +663,8 @@ ReactHoverGrid.propTypes = {
 
   , filter_normal: PropTypes.string
   , filter_hover: PropTypes.string
-  , normal_area: PropTypes.string
-  , hover_area: PropTypes.string
+  , normal_area: PictureTile.AREA_PROP_TYPE
+  , hover_area: PictureTile.AREA_PROP_TYPE
   , normal_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
   , hover_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
 
@@ -670,6 +672,7 @@ ReactHoverGrid.propTypes = {
   , resize_pub_sub: PropTypes.object
 
   , server_render_ssr: PropTypes.bool
+  , init_shuffle_ssr: PropTypes.bool
   , server_screen_size: PropTypes.array
   , show_server_grid_sizes: PropTypes.bool
   , server_grid_size: PropTypes.array
@@ -684,6 +687,7 @@ ReactHoverGrid.defaultProps = {
   , ver_text_edge: 2
   , tile_edge: 3
   , server_render_ssr: false
+  , init_shuffle_ssr: false
   , resize_nested_component: false
 }
 

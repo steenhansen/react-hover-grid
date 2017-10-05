@@ -384,14 +384,12 @@ var ReactHoverGrid = function (_React$Component) {
                         var _image_tile = row[i];
                         _image_tile.left_picture_margin = -Math.abs(Math.floor(pixelsToRemove / 2));
                         _image_tile.adjusted_tile_width = _image_tile.picture_width - pixelsToRemove;
-                        _image_tile.center_last_row = false;
                     }
                 } else {
                     for (var j in row) {
                         var _image_tile2 = row[j];
                         _image_tile2.left_picture_margin = 0;
                         _image_tile2.adjusted_tile_width = _image_tile2.picture_width;
-                        _image_tile2.center_last_row = true;
                     }
                 }
                 return row;
@@ -578,9 +576,9 @@ var ReactHoverGrid = function (_React$Component) {
                     'normal_style',
                     'hover_style',
                     'normal_title_style',
-                    'normal_text_style',
+                    'normal_info_style',
                     'hover_title_style',
-                    'hover_text_style',
+                    'hover_info_style',
                     'hover_gradient',
                     'normal_gradient',
                     'hover_linear_gradient',
@@ -648,11 +646,7 @@ var ReactHoverGrid = function (_React$Component) {
                     }
                     return _react2.default.createElement(_PictureTile2.default, {
                         key: tile_index,
-                        picture_container_id: picture_container_id,
-                        setHoverFunction: _this2.setHoverFunction,
-                        is_static_tile: is_static_tile,
-                        hover_grid_id: _this2.props.hover_grid_id,
-                        ssr_grid_id: _this2.props.ssr_grid_id,
+                        picture_src: current_tile.picture_src,
                         normal_area: current_tile.normal_area,
                         hover_area: current_tile.hover_area,
                         normal_style: current_tile.normal_style,
@@ -662,20 +656,24 @@ var ReactHoverGrid = function (_React$Component) {
                         hover_linear_gradient: current_tile.hover_linear_gradient,
                         normal_linear_gradient: current_tile.normal_linear_gradient,
                         normal_title_style: current_tile.normal_title_style,
-                        normal_text_style: current_tile.normal_text_style,
+                        normal_info_style: current_tile.normal_info_style,
                         hover_title_style: current_tile.hover_title_style,
-                        hover_text_style: current_tile.hover_text_style,
+                        hover_info_style: current_tile.hover_info_style,
                         filter_normal: current_tile.filter_normal,
                         filter_hover: current_tile.filter_hover,
-                        adjusted_tile_width: current_tile.adjusted_tile_width,
-                        picture_width: current_tile.picture_width,
-                        left_picture_margin: current_tile.left_picture_margin,
-                        picture_src: current_tile.picture_src,
                         link_url: current_tile.link_url,
                         normal_title: current_tile.normal_title,
                         normal_info: current_tile.normal_info,
                         hover_title: current_tile.hover_title,
-                        hover_info: current_tile.hover_info
+                        hover_info: current_tile.hover_info,
+                        rgh_picture_container_id: picture_container_id,
+                        rgh_setHoverFunction: _this2.setHoverFunction,
+                        rgh_hover_grid_id: _this2.props.hover_grid_id,
+                        rgh_ssr_grid_id: _this2.props.ssr_grid_id,
+                        rgh_is_static_tile: is_static_tile,
+                        rgh_adjusted_tile_width: current_tile.adjusted_tile_width,
+                        rgh_picture_width: current_tile.picture_width,
+                        rgh_left_picture_margin: current_tile.left_picture_margin
                     });
                 });
                 return picture_list;
@@ -758,9 +756,9 @@ ReactHoverGrid.propTypes = {
     shuffle_seconds: _propTypes2.default.number,
     google_font_link: _propTypes2.default.oneOfType(ReactHoverGrid.STRING_OR_ARRAY),
     normal_title_style: _propTypes2.default.oneOfType(_PictureTile2.default.STRING_OR_OBJECT_CSS),
-    normal_text_style: _propTypes2.default.oneOfType(_PictureTile2.default.STRING_OR_OBJECT_CSS),
+    normal_info_style: _propTypes2.default.oneOfType(_PictureTile2.default.STRING_OR_OBJECT_CSS),
     hover_title_style: _propTypes2.default.oneOfType(_PictureTile2.default.STRING_OR_OBJECT_CSS),
-    hover_text_style: _propTypes2.default.oneOfType(_PictureTile2.default.STRING_OR_OBJECT_CSS),
+    hover_info_style: _propTypes2.default.oneOfType(_PictureTile2.default.STRING_OR_OBJECT_CSS),
     inject_css_rules: _propTypes2.default.string,
     max_rows: _propTypes2.default.number,
     hover_gradient: _propTypes2.default.string,
@@ -769,13 +767,14 @@ ReactHoverGrid.propTypes = {
     normal_linear_gradient: _PictureTile2.default.LINEAR_GRADIENT,
     filter_normal: _propTypes2.default.string,
     filter_hover: _propTypes2.default.string,
-    normal_area: _propTypes2.default.string,
-    hover_area: _propTypes2.default.string,
+    normal_area: _PictureTile2.default.AREA_PROP_TYPE,
+    hover_area: _PictureTile2.default.AREA_PROP_TYPE,
     normal_style: _propTypes2.default.oneOfType(_PictureTile2.default.STRING_OR_OBJECT_CSS),
     hover_style: _propTypes2.default.oneOfType(_PictureTile2.default.STRING_OR_OBJECT_CSS),
     resize_nested_component: _propTypes2.default.bool,
     resize_pub_sub: _propTypes2.default.object,
     server_render_ssr: _propTypes2.default.bool,
+    init_shuffle_ssr: _propTypes2.default.bool,
     server_screen_size: _propTypes2.default.array,
     show_server_grid_sizes: _propTypes2.default.bool,
     server_grid_size: _propTypes2.default.array,
@@ -788,6 +787,7 @@ ReactHoverGrid.defaultProps = {
     ver_text_edge: 2,
     tile_edge: 3,
     server_render_ssr: false,
+    init_shuffle_ssr: false,
     resize_nested_component: false
 };
 exports.default = ReactHoverGrid;
