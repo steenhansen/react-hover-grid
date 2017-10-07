@@ -477,7 +477,7 @@ class ReactHoverGrid extends React.Component {
     return current_tile
   }
 
-  _cascadeStyles (current_tile) {
+  _cascadeStyles (current_tile) {  // cascade to PictureTile
     console.assert(typeof current_tile === 'object', '_cascadeStyles, current_tile not an object')
     const cascade_properties = ['normal_area', 'hover_area', 'normal_style', 'hover_style', 'normal_title_style'
       , 'normal_info_style', 'hover_title_style', 'hover_info_style', 'hover_gradient', 'normal_gradient'
@@ -551,28 +551,23 @@ class ReactHoverGrid extends React.Component {
 
         picture_src={current_tile.picture_src}
 
+        normal_area={current_tile.normal_area}    // cascade to PictureTile
+        hover_area={current_tile.hover_area}      // cascade to PictureTile
+        normal_style={current_tile.normal_style}  // cascade to PictureTile
+        hover_style={current_tile.hover_style}    // cascade to PictureTile
 
-        normal_area={current_tile.normal_area}
-        hover_area={current_tile.hover_area}
-        normal_style={current_tile.normal_style}
-        hover_style={current_tile.hover_style}
+        hover_gradient={current_tile.hover_gradient}                  // cascade to PictureTile
+        normal_gradient={current_tile.normal_gradient}                // cascade to PictureTile
+        hover_linear_gradient={current_tile.hover_linear_gradient}    // cascade to PictureTile
+        normal_linear_gradient={current_tile.normal_linear_gradient}  // cascade to PictureTile
 
-        hover_gradient={current_tile.hover_gradient}
-        normal_gradient={current_tile.normal_gradient}
-        hover_linear_gradient={current_tile.hover_linear_gradient}
-        normal_linear_gradient={current_tile.normal_linear_gradient}
+        normal_title_style={current_tile.normal_title_style}  // cascade to PictureTile
+        normal_info_style={current_tile.normal_info_style}    // cascade to PictureTile
+        hover_title_style={current_tile.hover_title_style}    // cascade to PictureTile
+        hover_info_style={current_tile.hover_info_style}      // cascade to PictureTile
 
-        normal_title_style={current_tile.normal_title_style}
-        normal_info_style={current_tile.normal_info_style}
-        hover_title_style={current_tile.hover_title_style}
-        hover_info_style={current_tile.hover_info_style}
-
-        filter_normal={current_tile.filter_normal}
-        filter_hover={current_tile.filter_hover}
-
-
-
-        
+        filter_normal={current_tile.filter_normal}  // cascade to PictureTile
+        filter_hover={current_tile.filter_hover}    // cascade to PictureTile
 
         link_url={current_tile.link_url}
 
@@ -580,7 +575,6 @@ class ReactHoverGrid extends React.Component {
         normal_info={current_tile.normal_info}
         hover_title={current_tile.hover_title}
         hover_info={current_tile.hover_info}
-
 
         rgh_picture_container_id={picture_container_id}
         rgh_setHoverFunction={this.setHoverFunction}
@@ -640,6 +634,26 @@ ReactHoverGrid.propTypes = {
   , hover_grid_row_height: PropTypes.number.isRequired
   , pictureTile_list: PropTypes.arrayOf(PictureTile.BASE_TILE_SHAPE).isRequired
 
+
+
+  , normal_title_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)  // cascade to PictureTile
+  , normal_info_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)   // cascade to PictureTile
+  , hover_title_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)   // cascade to PictureTile
+  , hover_info_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)    // cascade to PictureTile
+
+  , hover_gradient: PropTypes.string    // cascade to PictureTile
+  , normal_gradient: PropTypes.string   // cascade to PictureTile
+
+  , hover_linear_gradient: PictureTile.LINEAR_GRADIENT    // cascade to PictureTile
+  , normal_linear_gradient: PictureTile.LINEAR_GRADIENT   // cascade to PictureTile
+
+  , filter_normal: PropTypes.string          // cascade to PictureTile
+  , filter_hover: PropTypes.string           // cascade to PictureTile
+  , normal_area: PictureTile.AREA_PROP_TYPE  // cascade to PictureTile
+  , hover_area: PictureTile.AREA_PROP_TYPE   // cascade to PictureTile
+  , normal_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)   // cascade to PictureTile
+  , hover_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)    // cascade to PictureTile
+
   , hor_text_edge: PropTypes.number
   , ver_text_edge: PropTypes.number
   , tile_edge: PropTypes.number
@@ -647,39 +661,27 @@ ReactHoverGrid.propTypes = {
   , shuffle_seconds: PropTypes.number
   , google_font_link: PropTypes.oneOfType(ReactHoverGrid.STRING_OR_ARRAY)
 
-  , normal_title_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
-  , normal_info_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
-  , hover_title_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
-  , hover_info_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
-
   , inject_css_rules: PropTypes.string
   , max_rows: PropTypes.number
-
-  , hover_gradient: PropTypes.string
-  , normal_gradient: PropTypes.string
-
-  , hover_linear_gradient: PictureTile.LINEAR_GRADIENT
-  , normal_linear_gradient: PictureTile.LINEAR_GRADIENT
-
-  , filter_normal: PropTypes.string
-  , filter_hover: PropTypes.string
-  , normal_area: PictureTile.AREA_PROP_TYPE
-  , hover_area: PictureTile.AREA_PROP_TYPE
-  , normal_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
-  , hover_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
 
   , resize_nested_component: PropTypes.bool
   , resize_pub_sub: PropTypes.object
 
   , server_render_ssr: PropTypes.bool
   , init_shuffle_ssr: PropTypes.bool
-  , server_screen_size: PropTypes.array
-  , show_server_grid_sizes: PropTypes.bool
-  , server_grid_size: PropTypes.array
 
   , static_col: PropTypes.number        // N.B. can only use if all images are the same size !
-  , static_row: PropTypes.number
+  , static_row: PropTypes.number        // static_col and static_row are from one, and only one, PictureTile
   , onResize: PropTypes.func
+
+  // Below 3 properties are for matching screen sizes to grid sizes for server side rendering.
+  // .env file must be set to "NODE_ENV=development"
+
+  , show_server_grid_sizes: PropTypes.bool   // Find ssr grid sizes for screen sizes?
+  , server_screen_size: PropTypes.array      // Screen sizes to find grid sizes for when generate ssr grid
+  , server_grid_size: PropTypes.array        // Store grid to screen sizes here to console.log out
+
+
 }
 
 ReactHoverGrid.defaultProps = {

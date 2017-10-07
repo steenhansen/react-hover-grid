@@ -298,24 +298,24 @@ PictureTile.displayName = 'PictureTile'
 PictureTile.propTypes = {
   picture_src: PropTypes.string.isRequired
 
-  , normal_area: PictureTile.AREA_PROP_TYPE
-  , hover_area: PictureTile.AREA_PROP_TYPE
+  , normal_area: PictureTile.AREA_PROP_TYPE  // cascade from ReactHoverGrid
+  , hover_area: PictureTile.AREA_PROP_TYPE   // cascade from ReactHoverGrid
 
-  , normal_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
-  , hover_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
+  , normal_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)   // cascade from ReactHoverGrid 
+  , hover_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)    // cascade from ReactHoverGrid 
 
-  , hover_gradient: PropTypes.string
-  , normal_gradient: PropTypes.string
-  , hover_linear_gradient: PictureTile.LINEAR_GRADIENT
-  , normal_linear_gradient: PictureTile.LINEAR_GRADIENT
+  , hover_gradient: PropTypes.string                     // cascade from ReactHoverGrid 
+  , normal_gradient: PropTypes.string                    // cascade from ReactHoverGrid 
+  , hover_linear_gradient: PictureTile.LINEAR_GRADIENT   // cascade from ReactHoverGrid 
+  , normal_linear_gradient: PictureTile.LINEAR_GRADIENT  // cascade from ReactHoverGrid 
 
-  , normal_title_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
-  , normal_info_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
-  , hover_title_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
-  , hover_info_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)
+  , normal_title_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS) // cascade from ReactHoverGrid
+  , normal_info_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)  // cascade from ReactHoverGrid
+  , hover_title_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)  // cascade from ReactHoverGrid
+  , hover_info_style: PropTypes.oneOfType(PictureTile.STRING_OR_OBJECT_CSS)   // cascade from ReactHoverGrid 
 
-  , filter_normal: PropTypes.string
-  , filter_hover: PropTypes.string
+  , filter_normal: PropTypes.string  // cascade from ReactHoverGrid 
+  , filter_hover: PropTypes.string   // cascade from ReactHoverGrid 
 
   , link_url: PropTypes.string
 
