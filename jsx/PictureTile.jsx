@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import gradient_locations from './GradientLocations.js'
 import StyleOrJsx from './StyleOrJsx.js'
+var PureRenderMixin = require('react-addons-pure-render-mixin')  //  https://zhenyong.github.io/react/docs/pure-render-mixin.html
 
 const IMAGES_DIR = 'hover-grid-images'
 const ORIGINAL_IMAGES = ''
@@ -187,6 +188,7 @@ class PictureTile extends Component {
     }
     this.class_id_names = require('./classIdNames.js')(this.css_grid_id)
     console.assert(typeof this.class_id_names === 'object', 'PictureTile, class_id_name error')
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     this.state = {
       hover: false
     }

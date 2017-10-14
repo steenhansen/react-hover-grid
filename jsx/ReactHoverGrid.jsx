@@ -6,6 +6,7 @@ import PictureTile from './PictureTile.js'
 import gradient_locations from './GradientLocations.js'
 import screen_size_to_grid from './ScreenSizeToGrid.js'
 import misc_functions from './miscFuncs.js'
+var PureRenderMixin = require('react-addons-pure-render-mixin')
 
 const lodash_shuffle = require('lodash/shuffle.js')
 const invariant = require('invariant')
@@ -98,7 +99,7 @@ class ReactHoverGrid extends React.Component {
     this.change_div_to_percent = false
     this.window_to_grid_sizes = this._serverRenderCheck()
     this._nestedComponentResizing()
-
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     let {not_static_tiles, static_tile}= this._removeStatics()
     not_static_tiles = this._initialShuffle(not_static_tiles)
 
