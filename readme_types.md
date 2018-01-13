@@ -1,6 +1,6 @@
 
 
-#Types
+# Types
 
 ### AREA\_PROP\_TYPE
 > string
@@ -13,7 +13,7 @@
   || 'west'
   || 'middle'
 
-###STRING\_OR\_OBJECT\_CSS
+### STRING\_OR\_OBJECT\_CSS
 > string || object
   
 >     'font-size: 24px; color: #aabbcc' 
@@ -23,7 +23,7 @@
 >     {fontSize: '24px', color: '#aabbcc'}
 
 
-###STRING\_OR\_ARRAY
+### STRING\_OR\_ARRAY
 > string || array
   
 >      'https://fonts.googleapis.com/css?family=Schoolbell'
@@ -34,18 +34,18 @@
 >     ]     
 
 
-###LINEAR\_GRADIENT
+### LINEAR\_GRADIENT
 > {clear\_percent: number, gradient\_rgba:string}
 
 >     {clear_percent: 50, gradient_rgba: 'rgba(255, 255, 255, 0.99)'}
 
-###CSS\_FILTER
+### CSS\_FILTER
 > string
 
 >     'filter: drop-shadow(16px 16px 20px blue)'
 
 
-###CSS\_GRADIENT
+### CSS\_GRADIENT
 > string
 
 >     'rgba(0, 255, 0, 0.1)'

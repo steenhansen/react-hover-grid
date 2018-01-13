@@ -1,6 +1,6 @@
 
 
-#ReactHoverGrid Class
+# ReactHoverGrid Class
 
 ### [Types](/readme_types.md)
 

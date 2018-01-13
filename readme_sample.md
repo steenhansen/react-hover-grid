@@ -1,6 +1,6 @@
 
 
-#Sample Illustration
+# Sample Illustration
 
 Live [readme-sample](https://react-hover-grid.herokuapp.com/readme-sample) on Heroku
 

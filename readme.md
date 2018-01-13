@@ -1,4 +1,4 @@
- ![visual explanation](https://f001.backblazeb2.com/file/sff-images/steen/react_hover_grid.jpg)
+ ![visual explanation](https://nyc3.digitaloceanspaces.com/steen/react_hover_grid.jpg)
 
 An automatic re-sizing React image gallery component with hovering capabilities. [Server side rendering](https://react-hover-grid.herokuapp.com/ssr_with_js_grid) is also possible. No need to enter images dimensions as Gulp re-sizes images for you. Can also work [inside a react-split-pane](https://react-hover-grid.herokuapp.com/resizable_splitter_grid) component, or be contained in a div [which changes size](https://react-hover-grid.herokuapp.com/shrink_grow_grid) via events.
 
