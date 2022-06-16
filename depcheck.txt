@@ -1,0 +1,7 @@
+False positives of npx depcheck
+
+Unused devDependencies
+- @babel/preset-env
+- @babel/preset-react
+
+

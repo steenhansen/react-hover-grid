@@ -7,6 +7,7 @@ function _windowWidth() {
 
 function _getComputedWidth(grid_id) {
   var element = document.getElementById(grid_id);
+
   if (element === null) {
     return null;
   } else {
@@ -17,4 +18,7 @@ function _getComputedWidth(grid_id) {
   }
 }
 
-module.exports = { _windowWidth: _windowWidth, _getComputedWidth: _getComputedWidth };
+module.exports = {
+  _windowWidth: _windowWidth,
+  _getComputedWidth: _getComputedWidth
+};

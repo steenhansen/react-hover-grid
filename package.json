@@ -1,6 +1,6 @@
 {
   "name": "react-hover-grid",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "homepage": "https://github.com/steenhansen/react-hover-grid",
   "keywords": [
     "react",
@@ -36,12 +36,11 @@
   },
   "_npmVersion": "0.0.1",
   "dependencies": {
-    "react": "^15.3.1",
-    "react-dom": "^15.3.1",
+    "prop-types": "^15.8.1",
+    "react": "^17.0.2",
     "detect-node": "^2.0.3",
     "invariant": "^2.2.2",
-    "lodash": "^4.17.4",
-    "prop-types": "^15.5.10"
+    "lodash": "^4.17.4"
   },
   "description": "Hovering text gallery component for React",
   "repository": {
@@ -49,11 +48,11 @@
     "url": "git+https://github.com/steenhansen/react-hover-grid.git"
   },
   "devDependencies": {
-    "gulp-image-data-uri": "^1.2.2",
-    "gulp-responsive": "^2.8.0",
-    "node-env-file": "^0.1.8",
-    "gulp-unassert": "^1.0.1",
-    "gulp-changed": "^3.1.0",
-    "gulp-babel": "^6.1.2"
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "react-addons-pure-render-mixin": "^15.6.3"
   }
 }
