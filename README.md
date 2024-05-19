@@ -1,4 +1,5 @@
 <a name="fast-start"></a>
+<a name="s"></a>
 
 ![visual explanation](https://github.com/steenhansen/react-hover-grid/blob/master/react_hover_grid.jpg)
 
