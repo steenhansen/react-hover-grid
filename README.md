@@ -1,6 +1,8 @@
 <a name="fast-start"></a>
 <a name="s"></a>
 
+<img src="./tall-hover.webp" width="800">
+
 ![visual explanation](https://github.com/steenhansen/react-hover-grid/blob/master/react_hover_grid.jpg)
 
 An automatic re-sizing React image gallery component with hovering capabilities. [Server side rendering](https://react-hover-grid.onrender.com/ssr-no-js) is also possible. No need to enter images dimensions as Gulp re-sizes images for you. Can also work [inside a react-split-pane](https://react-hover-grid.onrender.com/resizable-splitter) component, or be contained in a div [which changes size](https://react-hover-grid.onrender.com/shrink-grow) via events.
