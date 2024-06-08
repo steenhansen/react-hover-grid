@@ -17,6 +17,8 @@ Full [webserver with examples](https://github.com/steenhansen/react-hover-grid-e
 
 $ npm install react-hover-grid --save
 
+$ npm install --global gulp-cli
+
 ## Compile
 
 $ gulp

@@ -282,11 +282,20 @@ var PictureTile = /*#__PURE__*/function (_Component) {
     value: function _imageSource(image_type) {
       var image_folder = this.props.rgh_hover_grid_id.replace("_id", "_images");
       var image_src;
+      var the_pic_src = this.props.picture_src;
 
-      if (image_type === "") {
-        image_src = IMAGES_DIR + "/" + image_folder + "/" + this.props.picture_src;
+      if (the_pic_src.includes(".amazonaws.com")) {
+        if (image_type === "") {
+          image_src = the_pic_src;
+        } else {
+          image_src = the_pic_src;
+        }
       } else {
-        image_src = IMAGES_DIR + "/" + image_folder + "/" + image_type + "/" + this.props.picture_src;
+        if (image_type === "") {
+          image_src = IMAGES_DIR + "/" + image_folder + "/" + this.props.picture_src;
+        } else {
+          image_src = IMAGES_DIR + "/" + image_folder + "/" + image_type + "/" + this.props.picture_src;
+        }
       }
 
       return image_src;
