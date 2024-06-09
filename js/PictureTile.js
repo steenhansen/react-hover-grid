@@ -85,7 +85,16 @@ var PictureTile = /*#__PURE__*/function (_Component) {
       container_styles.addStyling({
         backgroundPosition: this.props.rgh_left_picture_margin
       });
-      var image_className = this.props.picture_src.replace(".", "-");
+      var the_pic_src = this.props.picture_src;
+
+      if (the_pic_src.includes(".cloudfront.net")) {
+        var parts_arr = the_pic_src.split("/");
+        var file_name = parts_arr[parts_arr.length - 1];
+        var image_className = file_name.replace(".", "-");
+      } else {
+        var image_className = this.props.picture_src.replace(".", "-");
+      }
+
       container_styles.addStyling(image_className);
       container_styles.addStyling({
         width: this.props.rgh_adjusted_tile_width
@@ -284,7 +293,7 @@ var PictureTile = /*#__PURE__*/function (_Component) {
       var image_src;
       var the_pic_src = this.props.picture_src;
 
-      if (the_pic_src.includes(".amazonaws.com")) {
+      if (the_pic_src.includes(".cloudfront.net")) {
         if (image_type === "") {
           image_src = the_pic_src;
         } else {

@@ -45,7 +45,19 @@ class PictureTile extends Component {
     const TILE_IMAGE_class = this.class_id_names["TILE_IMAGE_PF"];
     let container_styles = new StyleOrJsx(TILE_IMAGE_class);
     container_styles.addStyling({ backgroundPosition: this.props.rgh_left_picture_margin });
-    const image_className = this.props.picture_src.replace(".", "-");
+
+    let the_pic_src = this.props.picture_src;
+    if (the_pic_src.includes(".cloudfront.net")) {
+      let parts_arr = the_pic_src.split("/");
+      let file_name = parts_arr[parts_arr.length - 1];
+      var image_className = file_name.replace(".", "-");
+    } else {
+      var image_className = this.props.picture_src.replace(".", "-");
+    }
+    
+    
+    
+    
     container_styles.addStyling(image_className);
     container_styles.addStyling({ width: this.props.rgh_adjusted_tile_width });
     const normal_classNames = container_styles.collectedClassNames();
@@ -171,7 +183,7 @@ class PictureTile extends Component {
     const image_folder = this.props.rgh_hover_grid_id.replace("_id", "_images");
     let image_src;
     let the_pic_src = this.props.picture_src;
-    if (the_pic_src.includes(".amazonaws.com")) {
+    if (the_pic_src.includes(".cloudfront.net")) {
     if (image_type === "") {
           image_src = the_pic_src;
       } else {
